@@ -1,0 +1,195 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -o kubernetes.yml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: backend
+    name: backend
+  spec:
+    ports:
+    - name: "5000"
+      port: 5000
+      targetPort: 5000
+    selector:
+      io.kompose.service: backend
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -o kubernetes.yml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: frontend
+    name: frontend
+  spec:
+    ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+    selector:
+      io.kompose.service: frontend
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -o kubernetes.yml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: mongo
+    name: mongo
+  spec:
+    ports:
+    - name: "27017"
+      port: 27017
+      targetPort: 27017
+    selector:
+      io.kompose.service: mongo
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -o kubernetes.yml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: backend
+    name: backend
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        io.kompose.service: backend
+    strategy: {}
+    template:
+      metadata:
+        annotations:
+          kompose.cmd: kompose convert -o kubernetes.yml
+          kompose.version: 1.21.0 (992df58d8)
+        creationTimestamp: null
+        labels:
+          io.kompose.service: backend
+      spec:
+        containers:
+        - env:
+          - name: MONGO_URI
+            value: '''mongodb://mongo:27017/shopping-cart'''
+          image: asia.gcr.io/mern-shopping-cart/backend
+          imagePullPolicy: ""
+          name: backend
+          ports:
+          - containerPort: 5000
+          resources: {}
+        restartPolicy: Always
+        serviceAccountName: ""
+        volumes: null
+  status: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -o kubernetes.yml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: frontend
+    name: frontend
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        io.kompose.service: frontend
+    strategy: {}
+    template:
+      metadata:
+        annotations:
+          kompose.cmd: kompose convert -o kubernetes.yml
+          kompose.version: 1.21.0 (992df58d8)
+        creationTimestamp: null
+        labels:
+          io.kompose.service: frontend
+      spec:
+        containers:
+        - image: asia.gcr.io/mern-shopping-cart/frontend
+          imagePullPolicy: ""
+          name: frontend
+          ports:
+          - containerPort: 3000
+          resources: {}
+          stdin: true
+        restartPolicy: Always
+        serviceAccountName: ""
+        volumes: null
+  status: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -o kubernetes.yml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: mongo
+    name: mongo
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        io.kompose.service: mongo
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          kompose.cmd: kompose convert -o kubernetes.yml
+          kompose.version: 1.21.0 (992df58d8)
+        creationTimestamp: null
+        labels:
+          io.kompose.service: mongo
+      spec:
+        containers:
+        - image: mongo:3.6.19-xenial
+          imagePullPolicy: ""
+          name: mongo
+          ports:
+          - containerPort: 27017
+          resources: {}
+          volumeMounts:
+          - mountPath: /data/db
+            name: mongo-data
+        restartPolicy: Always
+        serviceAccountName: ""
+        volumes:
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: mongo-data
+  status: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    creationTimestamp: null
+    labels:
+      io.kompose.service: mongo-data
+    name: mongo-data
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  status: {}
+kind: List
+metadata: {}
+
