@@ -1,0 +1,16 @@
+{
+  "name": "mern-shopping-cart",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/justsom3guy/mern-shopping-cart.git",
+  "author": "Sidharth Nair <snair2103@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  },
+  "scripts": {
+    "backend": "yarn --cwd ./backend/ server",
+    "frontend": "yarn --cwd ./frontend/ start",
+    "dev": "concurrently \"yarn backend\" \"yarn frontend\""
+  }
+}
