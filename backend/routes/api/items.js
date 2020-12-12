@@ -21,7 +21,7 @@ router.post("/", (req, res) => {
   newItem
     .save()
     .then(() => {
-      res.status(201).json({ message: "Successfully added." });
+      res.status(201).json(newItem);
     })
     .catch((err) => {
       res.status(400).json({ message: err.message });

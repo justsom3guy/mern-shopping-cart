@@ -14,8 +14,6 @@ import {
 
 import { addItem } from "../actions/itemActions";
 
-import { v4 as uuid } from "uuid";
-
 export class ItemModal extends Component {
   state = {
     modal: false,
@@ -36,7 +34,6 @@ export class ItemModal extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const newItem = {
-      id: uuid(),
       name: this.state.name,
     };
     this.props.addItem(newItem);
